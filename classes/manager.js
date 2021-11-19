@@ -107,6 +107,37 @@ class Manager {
 
         }
     }
+    async updateProducto(id,body){
+        try{
+            let data = await fs.promises.readFile('./files/products.txt','utf-8');
+            let products = JSON.parse(data);
+            if(!products.some(prod=>prod.id===id)) return {status:"error", message:"No hay ningún producto con el id especificado"}
+            let result = products.map(prod=>{
+                if(prod.id===id){
+                    body = Object.assign(body)
+                    return body
+                }
+                else{
+                    return prod;
+                }
+            })
+            try{
+                await fs.promises.writeFile('./files/products.txt',JSON.stringify(result,null,2));
+                return {status:"success", message:"Producto actualizado"}
+            }catch{
+                return {status:"error", message:"Error al actualizar el producto"}
+            }
+        }catch{
+            return {status:"error",message:"Fallo al actualizar el producto"}
+        }
+    }
+
+
+
+
+
+
+
 }
 
 module.exports = Manager;
