@@ -1,4 +1,5 @@
 const express = require('express');
+const upload = require('../services/uploader');
 const router = express.Router();
 const Manager = require('../classes/manager');
 const manager = new Manager(); 
@@ -25,8 +26,10 @@ router.get('/:pid',(req,res) => {
 })
 
 //POST
-router.post('/', (req,res) => {
+router.post('/', upload.single('image'), (req,res) => {
+    let file = req.file;
     let cuerpo = req.body;
+    cuerpo.thumbnail = req.protocol+"://"+req.hostname+":8080"+'/images/'+file.filename;
     manager.save(cuerpo).then(result => {
         res.send(result);
     })
